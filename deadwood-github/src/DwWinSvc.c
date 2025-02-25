@@ -50,9 +50,19 @@
 
  */
 
-#include <winsock.h>
-#include <wininet.h>
-#include <stdint.h>
+//#include <winsock.h>
+//#include <wininet.h>
+//#include <stdint.h>
+
+#include <stdio.h>
+#include <signal.h>
+#include "DwSocket.h"
+#include "DwTcpSocket.h"
+#include "DwSys.h"
+#include "version.h"
+#include "windows.h"
+//#include "winsvc.h"
+
 #include <stdio.h>
 /* Make -Wall happy */
 #include "DwStr.h"

@@ -44,9 +44,9 @@
 /* Initialize the log */
 void dw_log_init();
 
-#ifdef MINGW
+#if defined(MINGW) || defined(MSYS2)
 void dw_tcp_log_init();
-#endif /* MINGW */
+#endif /* MINGW || MSYS2 */
 
 /* Close the log */
 void dw_log_close();

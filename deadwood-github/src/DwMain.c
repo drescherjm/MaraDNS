@@ -62,7 +62,7 @@ void dw_parse_args(int argc, char **argv) {
                 }
                 process_mararc(argv[2]);
         } else {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                 process_mararc("/etc/dwood3rc");
 #else /* MINGW */
                 process_mararc("dwood3rc.txt");
@@ -120,7 +120,7 @@ int dw_udp_main(int argc, char **argv) {
 extern int dw_tcp_main(int argc, char **argv);
 /* Combined binary: Have DwUdp and DwTcp be the same program */
 
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
 int main(int argc, char **argv) {
 #else /* MINGW */
 int dw_svc_main(int argc, char **argv) {

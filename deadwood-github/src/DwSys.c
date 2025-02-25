@@ -61,7 +61,7 @@ blockHash *blocked_hosts_hash = 0;
 extern int32_t maradns_uid;
 extern int32_t maradns_gid;
 
-#ifdef MINGW
+#if defined(MINGW) || defined(MSYS2)
 FILE *LOG = 0;
 void dw_win_time() {
         SYSTEMTIME t;
@@ -74,26 +74,26 @@ void dw_win_time() {
                 NULL, h, 250);
         fprintf(LOG,"%s %s: ",d,h);
 }
-#endif /* MINGW */
+#endif /* MINGW || MSYS2 */
 
 /* Logging functions */
 /* Initialize the log */
 void dw_log_init() {
-#ifdef MINGW
+#if defined(MINGW) || defined(MSYS2)
         LOG = fopen("dwlog.txt","ab");
         dw_win_time();
         fprintf(LOG,"%s\n","==Deadwood started==");
-#endif /* MINGW */
+#endif /* MINGW || MSYS2 */
         return;
 }
 
 /* Close the log */
 void dw_log_close() {
-#ifdef MINGW
+#if defined(MINGW) || defined(MSYS2)
         dw_win_time();
         fprintf(LOG,"%s\n","==Deadwood stopped==");
         fclose(LOG);
-#endif /* MINGW */
+#endif /* MINGW || MSYS2 */
         return;
 }
 
@@ -106,7 +106,7 @@ void dw_log_dwstr_p(char *s1, dw_str *s2, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
         printf("%s",s1);
 #else /* MINGW */
         dw_win_time();
@@ -114,7 +114,7 @@ void dw_log_dwstr_p(char *s1, dw_str *s2, int min_log_level) {
 #endif /* MINGW */
 
         if(s2 == 0) {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                 printf("(null dw_str)");
 #else /* MINGW */
                 fprintf(LOG,"(null dw_str)");
@@ -126,25 +126,25 @@ void dw_log_dwstr_p(char *s1, dw_str *s2, int min_log_level) {
                 q = *(s2->str + ll);
                 if(q >= '.' && q <= '~' /* Last ASCII char */ && q != '\\'
                    && q != '{' && q != '}') {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("%c",q);
 #else /* MINGW */
                         fprintf(LOG,"%c",q);
 #endif /* MINGW */
                 } else if(q == '-') {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("%c",q);
 #else /* MINGW */
                         fprintf(LOG,"%c",q);
 #endif /* MINGW */
                 } else if(q == ' ') {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("{%c}",q);
 #else /* MINGW */
                         fprintf(LOG,"{%c}",q);
 #endif /* MINGW */
                 } else {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("\\%03o",q);
 #else /* MINGW */
                         fprintf(LOG,"\\%03o",q);
@@ -158,7 +158,7 @@ void dw_log_ip_p(ip_addr_T *ip) {
         int counter = 0;
 
         if(ip == 0) {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                 printf("%s","(null IP)\n");
 #else /* MINGW */
                 fprintf(LOG,"%s","(null IP)\n");
@@ -168,13 +168,13 @@ void dw_log_ip_p(ip_addr_T *ip) {
 
         if(ip->len == 4) {
                 for(counter = 0; counter < 3; counter++) {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("%d.",ip->ip[counter]);
 #else /* MINGW */
                         fprintf(LOG,"%d.",ip->ip[counter]);
 #endif /* MINGW */
                 }
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                 printf("%d ",ip->ip[3]);
 #else /* MINGW */
                 fprintf(LOG,"%d ",ip->ip[3]);
@@ -182,20 +182,20 @@ void dw_log_ip_p(ip_addr_T *ip) {
 #ifndef NOIP6
         } else if(ip->len == 16) {
                 for(counter = 0; counter < 15; counter++) {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("%02x:",ip->ip[counter]);
 #else /* MINGW */
                         fprintf(LOG,"%02x:",ip->ip[counter]);
 #endif /* MINGW */
                 }
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                 printf("%02x ",ip->ip[15]);
 #else /* MINGW */
                 fprintf(LOG,"%02x ",ip->ip[15]);
 #endif /* MINGW */
 #endif /* NOIP6 */
         } else {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                 printf("%s%d","IP of length ",ip->len);
 #else /* MINGW */
                 fprintf(LOG,"%s%d","IP of length ",ip->len);
@@ -210,7 +210,7 @@ void dw_log_ip(char *string, ip_addr_T *ip, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
         printf("%s ",string);
 #else /* MINGW */
         dw_win_time();
@@ -219,7 +219,7 @@ void dw_log_ip(char *string, ip_addr_T *ip, int min_log_level) {
 
         dw_log_ip_p(ip);
 
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
         printf("%s","\n");
 #else /* MINGW */
         fprintf(LOG,"%s","\n");
@@ -238,7 +238,7 @@ void dw_log_dwstr(char *s1, dw_str *s2, int min_log_level) {
 
         /* OK, add a newline */
 
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
         printf("%s","\n");
 #else /* MINGW */
         fprintf(LOG,"%s","\n");
@@ -254,7 +254,7 @@ void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
         printf("%s",s1);
 #else /* MINGW */
         fprintf(LOG,"%s",s1);
@@ -262,7 +262,7 @@ void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level) {
 
         if(s2 != 0 && s2->str != 0) {
                 for(a=0;a<s2->len;a++) {
-#ifndef MINGW
+#if !defined(MINGW) && !defined(MSYS2)
                         printf("%d.",*(s2->str + a));
 #else /* MINGW */
                         fprintf(LOG,"%d.",*(s2->str + a));
@@ -272,7 +272,7 @@ void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level) {
 
         /* OK, add a newline */
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s","\n");
 #else /* MINGW */
         fprintf(LOG,"%s","\n");
@@ -291,7 +291,7 @@ void dw_log_dwstr_str(char *s1, dw_str *s2, char *s3, int min_log_level) {
 
         /* OK, add a newline */
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s\n",s3);
 #else /* MINGW */
         fprintf(LOG,"%s\n",s3);
@@ -308,7 +308,7 @@ void dw_log_string(char *string, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s\n",string);
 #else /* MINGW */
         dw_win_time();
@@ -326,7 +326,7 @@ void dw_log_3strings(char *s1, char *s2, char *s3, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s%s%s\n",s1,s2,s3);
 #else /* MINGW */
         dw_win_time();
@@ -344,7 +344,7 @@ void dw_log_number(char *s1, int number, char *s2, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s%d%s\n",s1,number,s2);
 #else /* MINGW */
         dw_win_time();
@@ -360,7 +360,7 @@ void dw_log_hex(char *s1, uint32_t number, int min_log_level) {
                 return;
         }
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s%x\n",s1,number);
 #else /* MINGW */
         dw_win_time();
@@ -372,7 +372,7 @@ void dw_log_hex(char *s1, uint32_t number, int min_log_level) {
  * strings at; this always logs and is run before Dwood2rc file is parsed */
 void dw_alog_3strings(char *s1, char *s2, char *s3) {
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s%s%s\n",s1,s2,s3);
 #else /* MINGW */
         dw_win_time();
@@ -387,7 +387,7 @@ void dw_alog_3strings(char *s1, char *s2, char *s3) {
  * This always logs and is run before Dwood2rc file is fully parsed */
 void dw_alog_number(char *s1, int number, char *s2) {
 
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
         printf("%s%d %s\n",s1,number,s2);
 #else /* MINGW */
         dw_win_time();
@@ -400,14 +400,14 @@ void dw_alog_number(char *s1, int number, char *s2) {
 /* Exit with a fatal error */
 void dw_fatal(char *why) {
         if(why != 0) {
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
                 printf("Fatal: %s\n",why);
 #else /* MINGW */
                 dw_win_time();
                 fprintf(LOG,"Fatal: %s\n",why);
 #endif /* MINGW */
         } else {
-#ifndef MINGW
+#if !definedMINGW && !definedMSYS2
                 printf("Fatal: Unknown fatal error\n");
 #else /* MINGW */
                 dw_win_time();
